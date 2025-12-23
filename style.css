@@ -1,0 +1,181 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;   /* modern, calming font */
+  min-height: 100vh;                    /* full screen height */
+  background: linear-gradient(
+    to bottom,
+    #d9a7c7,
+    #fffcdc
+  );                                    /* soft gradient */
+  color: #333;                          /* readable text color */
+  transition: background 1.5s ease;     /* smooth background change */
+}
+
+.session {
+  margin-top: 20px;
+}
+
+.session button {
+  margin: 5px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  cursor: pointer;
+}
+
+
+
+/* SCREENS */
+.screen {
+  display: none;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* TITLES */
+.app-title {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #555;
+}
+
+/* GRID (2x2 PERFECT SQUARE) */
+.grid {
+  margin: 40px auto;
+  max-width: 600px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+/* CARDS */
+.card {
+  height: 180px;
+  padding: 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+}
+
+.icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.card p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* INDIVIDUAL THEMES */
+.morning {
+  background: linear-gradient(to bottom right, #fff1c1, #ffd59e);
+}
+
+.night {
+  background: linear-gradient(to bottom right, #cfd9ff, #a5b4fc);
+}
+
+.stress {
+  background: linear-gradient(to bottom right, #ffd6d6, #ff9a9a);
+}
+
+.exam {
+  background: linear-gradient(to bottom right, #d1fae5, #6ee7b7);
+}
+
+/* MEDITATION SCREEN */
+.back {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.med-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.med-desc {
+  color: #555;
+}
+
+/* BREATHING AREA */
+.breathing-area {
+  margin: 40px auto;
+  padding: 40px 20px;
+  max-width: 360px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 30px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* BREATHING CIRCLE */
+.circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #6c63ff, #4f46e5);
+  opacity: 0.85;
+}
+
+/* TEXT */
+.instruction {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.countdown {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+/* CONTROLS */
+.controls button {
+  padding: 12px 30px;
+  margin: 10px;
+  border: none;
+  border-radius: 30px;
+  background: #6c63ff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.controls button:hover {
+  background: #4f46e5;
+}

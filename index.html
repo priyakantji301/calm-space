@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calm Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HOME SCREEN -->
+  <div id="home" class="screen active">
+    <h1 class="app-title">🧘 Calm Space</h1>
+    <p class="subtitle">Choose a meditation routine</p>
+
+    <div class="grid">
+      <div class="card morning" data-type="morning">
+        <span class="icon">🌅</span>
+        <h3>Morning Calm</h3>
+        <p>Fresh start & clarity</p>
+      </div>
+
+      <div class="card night" data-type="night">
+        <span class="icon">🌙</span>
+        <h3>Night Relaxation</h3>
+        <p>Slow down & rest</p>
+      </div>
+
+      <div class="card stress" data-type="stress">
+        <span class="icon">🔥</span>
+        <h3>Stress Relief</h3>
+        <p>Release tension</p>
+      </div>
+
+      <div class="card exam" data-type="exam">
+        <span class="icon">📘</span>
+        <h3>Before Exam</h3>
+        <p>Focus & confidence</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDITATION SCREEN -->
+  <div id="meditation" class="screen">
+    <button class="back">← Back</button>
+    <div class="session">
+  <p>Select session length</p>
+  <button onclick="setSession(2)">2 min</button>
+  <button onclick="setSession(5)">5 min</button>
+  <button onclick="setSession(10)">10 min</button>
+</div>
+
+
+    <h1 class="med-title">Guided Breathing</h1>
+    <p class="med-desc">Follow the rhythm below</p>
+
+    <div class="breathing-area">
+      <div class="circle"></div>
+      <h2 class="instruction">Take a deep breath</h2>
+      <h1 class="countdown">3</h1>
+    </div>
+
+    <div class="controls">
+      <button>▶ Start</button>
+      <button>⏹ Stop</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -30,7 +30,8 @@ Calm Space is a web-based meditation application that guides users through breat
 - JavaScript
 
 ## 🚀 Live Website
-https://priyakantji301.github.io/calm-space/
+[https://priyakantji301.github.io/calm-space/](https://priyakantji301.github.io/calm-space/
+)
 
 ## 📌 How to Run
 1. Download the project

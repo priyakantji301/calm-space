@@ -1,73 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Calm Space</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Calm Space</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark">
 
-  <!-- HOME SCREEN -->
-  <div id="home" class="screen active">
-    <h1 class="app-title">🧘 Calm Space</h1>
-    <p class="subtitle">Choose a meditation routine</p>
+<div id="home" class="screen active">
 
-    <div class="grid">
-      <div class="card morning" data-type="morning">
-        <span class="icon">🌅</span>
-        <h3>Morning Calm</h3>
-        <p>Fresh start & clarity</p>
-      </div>
+  <h1 class="app-title">🧘 Calm Space</h1>
+  <p class="subtitle">Choose a meditation routine</p>
 
-      <div class="card night" data-type="night">
-        <span class="icon">🌙</span>
-        <h3>Night Relaxation</h3>
-        <p>Slow down & rest</p>
-      </div>
+  <button id="themeToggle" type="button">Toggle Light Mode</button>
 
-      <div class="card stress" data-type="stress">
-        <span class="icon">🔥</span>
-        <h3>Stress Relief</h3>
-        <p>Release tension</p>
-      </div>
-
-      <div class="card exam" data-type="exam">
-        <span class="icon">📘</span>
-        <h3>Before Exam</h3>
-        <p>Focus & confidence</p>
-      </div>
-    </div>
+  <div class="stats">
+    🌿 Sessions: <span id="totalSessions">0</span> |
+    ⏱ Minutes: <span id="totalMinutes">0</span>
   </div>
 
-  <!-- MEDITATION SCREEN -->
-  <div id="meditation" class="screen">
-    <button class="back">← Back</button>
-    <div class="session">
-  <p>Select session length</p>
-  <button onclick="setSession(2)">2 min</button>
-  <button onclick="setSession(5)">5 min</button>
-  <button onclick="setSession(10)">10 min</button>
+  <div class="grid">
+    <div class="card morning" data-type="morning">🌅 Morning Calm</div>
+    <div class="card night" data-type="night">🌙 Night Relaxation</div>
+    <div class="card stress" data-type="stress">🔥 Stress Relief</div>
+    <div class="card exam" data-type="exam">📘 Before Exam</div>
+    <div class="card custom centered" data-type="custom">⚙ Custom Builder</div>
+  </div>
 </div>
 
 
-    <h1 class="med-title">Guided Breathing</h1>
-    <p class="med-desc">Follow the rhythm below</p>
+<div id="meditation" class="screen">
 
-    <div class="breathing-area">
-      <div class="circle"></div>
-      <h2 class="instruction">Take a deep breath</h2>
-      <h1 class="countdown">3</h1>
-    </div>
+  <button class="back" type="button">← Back</button>
 
-    <div class="controls">
-      <button>▶ Start</button>
-      <button>⏹ Stop</button>
-    </div>
+  <div class="session-buttons">
+    <button type="button" onclick="setSession(2)">2m</button>
+    <button type="button" onclick="setSession(5)">5m</button>
+    <button type="button" onclick="setSession(10)">10m</button>
   </div>
-  <script src="script.js"></script>
 
+  <h1 class="med-title"></h1>
+
+  <div class="details">
+    <p class="breath-info"></p>
+    <p class="science-text"></p>
+  </div>
+
+  <!-- CUSTOM BUILDER -->
+  <div id="builder" class="builder hidden">
+    <input type="number" id="inhaleInput" placeholder="Inhale sec" min="1">
+    <input type="number" id="holdInput" placeholder="Hold sec" min="0">
+    <input type="number" id="exhaleInput" placeholder="Exhale sec" min="1">
+    <button type="button" onclick="applyCustom()">Apply</button>
+    <p id="errorMsg" class="error"></p>
+  </div>
+
+  <div class="breathing-area">
+
+    <svg class="progress-ring" width="200" height="200">
+      <circle class="ring-bg" cx="100" cy="100" r="90"/>
+      <circle class="ring-progress" cx="100" cy="100" r="90"/>
+    </svg>
+
+    <div class="circle"></div>
+
+    <h2 class="instruction">Ready</h2>
+    <h1 class="countdown" aria-live="polite"></h1>
+
+  </div>
+
+  <div class="control-buttons">
+    <button id="startBtn" type="button">Start</button>
+    <button id="stopBtn" type="button">Stop</button>
+  </div>
+
+  <p id="stopMessage" class="stop-msg"></p>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

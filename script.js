@@ -1,200 +1,171 @@
-// -------------------- SCREENS --------------------
-const home = document.getElementById("home");
-const meditation = document.getElementById("meditation");
+const home=document.getElementById("home");
+const meditation=document.getElementById("meditation");
+const cards=document.querySelectorAll(".card");
+const backBtn=document.querySelector(".back");
+const startBtn=document.getElementById("startBtn");
+const stopBtn=document.getElementById("stopBtn");
+const themeToggle=document.getElementById("themeToggle");
 
-// -------------------- TEXT ELEMENTS --------------------
-const medTitle = document.querySelector(".med-title");
-const medDesc = document.querySelector(".med-desc");
-const instruction = document.querySelector(".instruction");
-const countdown = document.querySelector(".countdown");
+const medTitle=document.querySelector(".med-title");
+const breathInfo=document.querySelector(".breath-info");
+const scienceText=document.querySelector(".science-text");
+const instruction=document.querySelector(".instruction");
+const countdown=document.querySelector(".countdown");
+const circle=document.querySelector(".circle");
+const ring=document.querySelector(".ring-progress");
+const stopMessage=document.getElementById("stopMessage");
+const errorMsg=document.getElementById("errorMsg");
 
-// -------------------- UI ELEMENTS --------------------
-const circle = document.querySelector(".circle");
-const backBtn = document.querySelector(".back");
-const startBtn = document.querySelector(".controls button:nth-child(1)");
-const stopBtn = document.querySelector(".controls button:nth-child(2)");
+let interval, sessionInterval;
+let sessionTime=0, elapsed=0;
+let currentRoutine=null;
 
-// -------------------- CARDS --------------------
-const cards = document.querySelectorAll(".card");
+let stats=JSON.parse(localStorage.getItem("stats"))||{sessions:0,minutes:0};
+document.getElementById("totalSessions").innerText=stats.sessions;
+document.getElementById("totalMinutes").innerText=stats.minutes;
 
-// -------------------- TIMERS --------------------
-let interval = null;
-let timeout = null;
-let sessionTimeout = null;
-let sessionTime = 0;
-
-// -------------------- BREATHING DATA (YOUR TABLE) --------------------
-const routines = {
-  morning: {
-    title: "🌅 Morning Calm",
-    desc: "Energy & focus through balanced breathing.",
-    inhale: 4,
-    hold: 4,
-    exhale: 4,
-    postHold: 0,
-    color: "#ffd59e"
-  },
-  exam: {
-    title: "📘 Before Exam",
-    desc: "Improve performance and steady the mind.",
-    inhale: 5,
-    hold: 0,
-    exhale: 5,
-    postHold: 0,
-    color: "#6ee7b7"
-  },
-  stress: {
-    title: "🔥 Stress Relief",
-    desc: "Immediate calm using rhythmic breathing.",
-    inhale: 4,
-    hold: 4,
-    exhale: 4,
-    postHold: 4,
-    color: "#ff9a9a"
-  },
-  night: {
-    title: "🌙 Night Relaxation",
-    desc: "Prepare the body for deep sleep.",
-    inhale: 4,
-    hold: 7,
-    exhale: 8,
-    postHold: 0,
-    color: "#a5b4fc"
+/* THEME */
+themeToggle.onclick=()=>{
+  if(document.body.classList.contains("dark")){
+    document.body.classList.remove("dark");
+    document.body.classList.add("light");
+    themeToggle.innerText="Toggle Dark Mode";
+  }else{
+    document.body.classList.remove("light");
+    document.body.classList.add("dark");
+    themeToggle.innerText="Toggle Light Mode";
   }
 };
 
-let currentRoutine = null;
+const routines={
+  morning:{inhale:4,hold:4,exhale:4,science:"4-4-4 box breathing improves oxygen balance and focus."},
+  night:{inhale:4,hold:7,exhale:8,science:"4-7-8 breathing activates parasympathetic nervous system."},
+  stress:{inhale:4,hold:4,exhale:4,science:"Rhythmic breathing reduces stress hormones."},
+  exam:{inhale:5,hold:0,exhale:5,science:"Equal rhythm enhances heart rate variability."},
+  custom:{inhale:4,hold:4,exhale:4,science:"Custom breathing enhances body awareness."}
+};
 
-// -------------------- CARD CLICK --------------------
-cards.forEach(card => {
-  card.addEventListener("click", () => {
-    const type = card.dataset.type;
-    openMeditation(type);
-  });
+cards.forEach(card=>{
+  card.onclick=()=>openMeditation(card.dataset.type);
 });
 
-// -------------------- BACK BUTTON --------------------
-backBtn.addEventListener("click", () => {
-  stopBreathing();
-  meditation.classList.remove("active");
-  home.classList.add("active");
-  document.body.style.background =
-    "linear-gradient(to bottom, #d9a7c7, #fffcdc)";
-});
-
-// -------------------- OPEN MEDITATION --------------------
-function openMeditation(type) {
-  currentRoutine = routines[type];
+function openMeditation(type){
+  currentRoutine=routines[type];
 
   home.classList.remove("active");
   meditation.classList.add("active");
 
-  medTitle.innerText = currentRoutine.title;
-  medDesc.innerText = currentRoutine.desc;
+  medTitle.innerText=type.charAt(0).toUpperCase()+type.slice(1);
+  breathInfo.innerText=`Inhale ${currentRoutine.inhale}s | Hold ${currentRoutine.hold}s | Exhale ${currentRoutine.exhale}s`;
+  scienceText.innerText=currentRoutine.science;
 
-  document.body.style.background =
-    `linear-gradient(to bottom, ${currentRoutine.color}, #ffffff)`;
-
-  resetText();
+  document.getElementById("builder").classList.toggle("hidden",type!=="custom");
+  stopMessage.innerText="";
 }
 
-// -------------------- BUTTON EVENTS --------------------
-startBtn.addEventListener("click", startBreathing);
-stopBtn.addEventListener("click", stopBreathing);
+backBtn.onclick=()=>{
+  stopBreathing();
+  meditation.classList.remove("active");
+  home.classList.add("active");
+};
 
-// -------------------- SESSION TIMER --------------------
-function setSession(minutes) {
-  sessionTime = minutes * 60;
-  alert(`Session set for ${minutes} minutes`);
+function setSession(min){
+  sessionTime=min*60;
+  elapsed=0;
 }
 
-// -------------------- BREATHING CONTROL --------------------
-function startBreathing() {
-  if (!currentRoutine) return;
+function applyCustom(){
+  let inhale=parseInt(document.getElementById("inhaleInput").value);
+  let hold=parseInt(document.getElementById("holdInput").value);
+  let exhale=parseInt(document.getElementById("exhaleInput").value);
 
+  if(isNaN(inhale)||isNaN(exhale)||inhale<=0||exhale<=0||hold<0){
+    errorMsg.innerText="Enter valid numbers. Inhale/Exhale > 0, Hold ≥ 0.";
+    return;
+  }
+
+  errorMsg.innerText="";
+  currentRoutine.inhale=inhale;
+  currentRoutine.hold=hold;
+  currentRoutine.exhale=exhale;
+
+  breathInfo.innerText=`Inhale ${inhale}s | Hold ${hold}s | Exhale ${exhale}s`;
+}
+
+startBtn.onclick=startBreathing;
+stopBtn.onclick=stopBreathing;
+
+function startBreathing(){
+  if(!currentRoutine||sessionTime===0)return;
+
+  stopMessage.innerText="";
   stopBreathing();
 
-  if (sessionTime > 0) {
-    sessionTimeout = setTimeout(() => {
+  sessionInterval=setInterval(()=>{
+    elapsed++;
+    updateRing();
+    if(elapsed>=sessionTime){
+      completeSession();
       stopBreathing();
-      instruction.innerText = "Session Complete 🌿";
-    }, sessionTime * 1000);
-  }
+    }
+  },1000);
 
   inhale(currentRoutine.inhale);
 }
 
-function stopBreathing() {
+function stopBreathing(){
   clearInterval(interval);
-  clearTimeout(timeout);
-  clearTimeout(sessionTimeout);
+  clearInterval(sessionInterval);
+  ring.style.strokeDashoffset=565;
+  circle.style.transform="scale(1)";
+  instruction.innerText="Ready";
+  countdown.innerText="";
 
-  interval = null;
-  timeout = null;
-  sessionTimeout = null;
-
-  resetText();
-  circle.style.transform = "scale(1)";
-}
-
-function resetText() {
-  instruction.innerText = "Take a deep breath";
-  countdown.innerText = "";
-}
-
-// -------------------- BREATHING PHASES --------------------
-function inhale(seconds) {
-  instruction.innerText = "Inhale";
-  animateCircle(1.4, seconds);
-  runCountdown(seconds, () => hold(currentRoutine.hold));
-}
-
-function hold(seconds) {
-  if (seconds === 0) {
-    exhale(currentRoutine.exhale);
-    return;
-  }
-  instruction.innerText = "Hold";
-  animateCircle(1.4, seconds);
-  runCountdown(seconds, () => exhale(currentRoutine.exhale));
-}
-
-function exhale(seconds) {
-  instruction.innerText = "Exhale";
-  animateCircle(1.0, seconds);
-
-  if (currentRoutine.postHold > 0) {
-    runCountdown(seconds, () => postHold(currentRoutine.postHold));
-  } else {
-    runCountdown(seconds, () => inhale(currentRoutine.inhale));
+  if(elapsed>0){
+    stopMessage.innerText=`You completed ${elapsed} seconds of breathing 🌿`;
   }
 }
 
-function postHold(seconds) {
-  instruction.innerText = "Hold";
-  animateCircle(1.0, seconds);
-  runCountdown(seconds, () => inhale(currentRoutine.inhale));
+function completeSession(){
+  stats.sessions++;
+  stats.minutes+=sessionTime/60;
+  localStorage.setItem("stats",JSON.stringify(stats));
+  document.getElementById("totalSessions").innerText=stats.sessions;
+  document.getElementById("totalMinutes").innerText=stats.minutes;
 }
 
-// -------------------- COUNTDOWN LOGIC --------------------
-function runCountdown(seconds, next) {
-  let time = seconds;
-  countdown.innerText = time;
+function updateRing(){
+  const percent=elapsed/sessionTime;
+  ring.style.strokeDashoffset=565-(565*percent);
+}
 
-  interval = setInterval(() => {
+function inhale(sec){
+  instruction.innerText="Inhale";
+  circle.style.transform="scale(1.4)";
+  runCountdown(sec,()=>hold(currentRoutine.hold));
+}
+
+function hold(sec){
+  if(sec===0){exhale(currentRoutine.exhale);return;}
+  instruction.innerText="Hold";
+  runCountdown(sec,()=>exhale(currentRoutine.exhale));
+}
+
+function exhale(sec){
+  instruction.innerText="Exhale";
+  circle.style.transform="scale(1)";
+  runCountdown(sec,()=>inhale(currentRoutine.inhale));
+}
+
+function runCountdown(sec,next){
+  let time=sec;
+  countdown.innerText=time;
+  interval=setInterval(()=>{
     time--;
-    countdown.innerText = time > 0 ? time : "";
-
-    if (time <= 0) {
+    countdown.innerText=time>0?time:"";
+    if(time<=0){
       clearInterval(interval);
-      interval = null;
-      timeout = setTimeout(next, 400);
+      next();
     }
-  }, 1000);
-}
-
-// -------------------- ANIMATION --------------------
-function animateCircle(scale, duration) {
-  circle.style.transition = `transform ${duration}s ease-in-out`;
-  circle.style.transform = `scale(${scale})`;
+  },1000);
 }
